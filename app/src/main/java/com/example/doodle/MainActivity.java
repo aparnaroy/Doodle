@@ -14,22 +14,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
+import androidx.core.content.ContextCompat;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.doodle.view.DoodleView;
 
-import java.io.FileNotFoundException;
 
 public class MainActivity extends AppCompatActivity {
-
     private DoodleView doodleView;
     private AlertDialog.Builder currentAlertDialog;
     private ImageView widthImageView;
@@ -40,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar greenSeekBar;
     private SeekBar blueSeekBar;
     private View colorView;
+    private boolean isEraserActive = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,19 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.lineWidthId) {
             showLineWidthDialog();
         } else if (item.getItemId() == R.id.eraseId) {
+            isEraserActive = !isEraserActive;
+            doodleView.setEraserMode(isEraserActive);
 
+            View eraseButton = findViewById(R.id.eraseId);
+            if (eraseButton != null) {
+                if (isEraserActive) {
+                    eraseButton.setBackgroundColor(ContextCompat.getColor(this, R.color.eraser_active));
+                    Toast.makeText(this, "Eraser Enabled", Toast.LENGTH_SHORT).show();
+                } else {
+                    eraseButton.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                    Toast.makeText(this, "Eraser Disabled", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);

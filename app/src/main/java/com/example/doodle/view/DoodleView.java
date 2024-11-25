@@ -1,8 +1,8 @@
 package com.example.doodle.view;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,10 +10,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -21,10 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 
@@ -36,11 +31,13 @@ public class DoodleView extends View {
     private Paint paintLine; // The actual line we can use to draw
     private HashMap<Integer, Path> pathMap; // The path of the drawn lines
     private HashMap<Integer, Point> previousPointMap;
+    private boolean isErasing = false;
+    private int previousColor;
+    private float previousWidth;
 
     public DoodleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
-
     }
 
     void init() {
@@ -157,6 +154,25 @@ public class DoodleView extends View {
         invalidate(); // Refresh the screen
     }
 
+
+    public void setEraserMode(boolean erasing) {
+        if (erasing) {
+            // Save the current color and width before switching to eraser mode
+            previousColor = paintLine.getColor();
+            previousWidth = paintLine.getStrokeWidth();
+
+            // Set the drawing color to the background color (for eraser)
+            paintLine.setColor(Color.WHITE);
+            paintLine.setStrokeWidth(100);
+        } else {
+            // Restore the pen with the previous color and width
+            paintLine.setColor(previousColor);
+            paintLine.setStrokeWidth(previousWidth);
+        }
+
+        isErasing = erasing;
+    }
+
     public void setDrawingColor(int color) {
         paintLine.setColor(color);
     }
@@ -174,33 +190,32 @@ public class DoodleView extends View {
     }
 
     public void saveDoodle() {
-        ContextWrapper cw = new ContextWrapper(getContext());
-        String fileName = "Doodle_" + System.currentTimeMillis();
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File myPath = new File(directory, fileName + ".jpg");
+        String fileName = "Doodle_" + System.currentTimeMillis() + ".jpg";
 
-        FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(myPath);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            ContentResolver resolver = getContext().getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/DoodleApp");
+
+            // Put the file in the Downloads folder
+            Uri imageUri = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                imageUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues);
+            }
+
+            if (imageUri != null) {
+                try (OutputStream outputStream = resolver.openOutputStream(imageUri)) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    Toast.makeText(getContext(), "Doodle Saved to Downloads!", Toast.LENGTH_LONG).show();
+                }
+            }
         } catch (Exception e) {
-            Toast message = Toast.makeText(getContext(), "Error Saving Doodle", Toast.LENGTH_LONG);
-            message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
-            message.show();
+            Toast.makeText(getContext(), "Error Saving Doodle", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         } finally {
-            try {
-                fos.flush();
-                fos.close();
-                Toast message = Toast.makeText(getContext(), "Doodle Saved: " + directory.getAbsolutePath(), Toast.LENGTH_LONG);
-                message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
-                message.show();
-            } catch (Exception e) {
-                Toast message = Toast.makeText(getContext(), "Error Saving Doodle", Toast.LENGTH_LONG);
-                message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
-                message.show();
-                e.printStackTrace();
-            }
+            clear(); // Clear the drawing after saving it
         }
     }
 }
