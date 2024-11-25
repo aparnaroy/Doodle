@@ -13,7 +13,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.doodle.view.DoodleView;
+
 public class MainActivity extends AppCompatActivity {
+
+    DoodleView doodleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        doodleView = findViewById(R.id.view);
     }
 
     @Override
@@ -34,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.clearId) {
+            doodleView.clear();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }
