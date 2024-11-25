@@ -1,20 +1,31 @@
 package com.example.doodle.view;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 public class DoodleView extends View {
@@ -160,5 +171,36 @@ public class DoodleView extends View {
 
     public int getLineWidth() {
         return (int) paintLine.getStrokeWidth();
+    }
+
+    public void saveDoodle() {
+        ContextWrapper cw = new ContextWrapper(getContext());
+        String fileName = "Doodle_" + System.currentTimeMillis();
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File myPath = new File(directory, fileName + ".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(myPath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            Toast message = Toast.makeText(getContext(), "Error Saving Doodle", Toast.LENGTH_LONG);
+            message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
+            message.show();
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.flush();
+                fos.close();
+                Toast message = Toast.makeText(getContext(), "Doodle Saved: " + directory.getAbsolutePath(), Toast.LENGTH_LONG);
+                message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
+                message.show();
+            } catch (Exception e) {
+                Toast message = Toast.makeText(getContext(), "Error Saving Doodle", Toast.LENGTH_LONG);
+                message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
+                message.show();
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -26,6 +26,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.doodle.view.DoodleView;
 
+import java.io.FileNotFoundException;
+
 public class MainActivity extends AppCompatActivity {
 
     private DoodleView doodleView;
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.clearId) {
             doodleView.clear();
         } else if (item.getItemId() == R.id.saveId) {
-
+            doodleView.saveDoodle();
         } else if (item.getItemId() == R.id.colorId) {
             showColorDialog();
         } else if (item.getItemId() == R.id.lineWidthId) {
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 ));
 
                 colorDialog.dismiss();
+
+                Toast.makeText(getApplicationContext(), "Color Updated", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -122,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             doodleView.setBackgroundColor(Color.argb(
+                    alphaSeekBar.getProgress(),
+                    redSeekBar.getProgress(),
+                    greenSeekBar.getProgress(),
+                    blueSeekBar.getProgress()
+            ));
+
+            // Display the currently chosen color
+            colorView.setBackgroundColor(Color.argb(
                     alphaSeekBar.getProgress(),
                     redSeekBar.getProgress(),
                     greenSeekBar.getProgress(),
@@ -153,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         widthSeekBar.setOnSeekBarChangeListener(widthSeekBarChange);
+        widthSeekBar.setProgress(doodleView.getLineWidth());
 
         currentAlertDialog.setView(view);
         lineWidthDialog = currentAlertDialog.create();
