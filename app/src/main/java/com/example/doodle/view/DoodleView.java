@@ -145,4 +145,20 @@ public class DoodleView extends View {
         bitmap.eraseColor(Color.WHITE); // White to match the background
         invalidate(); // Refresh the screen
     }
+
+    public void setDrawingColor(int color) {
+        paintLine.setColor(color);
+    }
+
+    public int getDrawingColor() {
+        return paintLine.getColor();
+    }
+
+    public void setLineWidth(int width) {
+        paintLine.setStrokeWidth(width);
+    }
+
+    public int getLineWidth() {
+        return (int) paintLine.getStrokeWidth();
+    }
 }
