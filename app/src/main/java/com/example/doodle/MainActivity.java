@@ -31,7 +31,13 @@ public class MainActivity extends AppCompatActivity {
     private DoodleView doodleView;
     private AlertDialog.Builder currentAlertDialog;
     private ImageView widthImageView;
-    private AlertDialog dialogLineWidth;
+    private AlertDialog lineWidthDialog;
+    private AlertDialog colorDialog;
+    private SeekBar alphaSeekBar;
+    private SeekBar redSeekBar;
+    private SeekBar greenSeekBar;
+    private SeekBar blueSeekBar;
+    private View colorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.saveId) {
 
         } else if (item.getItemId() == R.id.colorId) {
-
+            showColorDialog();
         } else if (item.getItemId() == R.id.lineWidthId) {
             showLineWidthDialog();
         } else if (item.getItemId() == R.id.eraseId) {
@@ -68,6 +74,67 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    void showColorDialog() {
+        currentAlertDialog = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.color_dialog, null);
+        alphaSeekBar = view.findViewById(R.id.alphaSeekBar);
+        redSeekBar = view.findViewById(R.id.redSeekBar);
+        greenSeekBar = view.findViewById(R.id.greenSeekBar);
+        blueSeekBar = view.findViewById(R.id.blueSeekBar);
+        colorView = view.findViewById(R.id.colorView);
+
+        // Register SeekBar event listeners
+        alphaSeekBar.setOnSeekBarChangeListener(colorSeekBarChange);
+        redSeekBar.setOnSeekBarChangeListener(colorSeekBarChange);
+        greenSeekBar.setOnSeekBarChangeListener(colorSeekBarChange);
+        blueSeekBar.setOnSeekBarChangeListener(colorSeekBarChange);
+
+        int color = doodleView.getDrawingColor();
+        alphaSeekBar.setProgress(Color.alpha(color));
+        redSeekBar.setProgress(Color.red(color));
+        greenSeekBar.setProgress(Color.green(color));
+        blueSeekBar.setProgress(Color.blue(color));
+
+        Button setColorButton = view.findViewById(R.id.setColorButton);
+        setColorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doodleView.setDrawingColor(Color.argb(
+                        alphaSeekBar.getProgress(),
+                        redSeekBar.getProgress(),
+                        greenSeekBar.getProgress(),
+                        blueSeekBar.getProgress()
+                ));
+
+                colorDialog.dismiss();
+            }
+        });
+
+        currentAlertDialog.setView(view);
+        currentAlertDialog.setTitle("Choose Color");
+        colorDialog = currentAlertDialog.create();
+        colorDialog.show();
+    }
+
+    // Change brush/stroke color
+    private SeekBar.OnSeekBarChangeListener colorSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            doodleView.setBackgroundColor(Color.argb(
+                    alphaSeekBar.getProgress(),
+                    redSeekBar.getProgress(),
+                    greenSeekBar.getProgress(),
+                    blueSeekBar.getProgress()
+            ));
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+    };
 
     void showLineWidthDialog() {
         currentAlertDialog = new AlertDialog.Builder(this);
@@ -79,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 doodleView.setLineWidth(widthSeekBar.getProgress());
-                dialogLineWidth.dismiss();
+                lineWidthDialog.dismiss();
                 currentAlertDialog = null;
                 Toast.makeText(getApplicationContext(), "Brush Size Set to " + widthSeekBar.getProgress(), Toast.LENGTH_LONG).show();
             }
@@ -88,11 +155,12 @@ public class MainActivity extends AppCompatActivity {
         widthSeekBar.setOnSeekBarChangeListener(widthSeekBarChange);
 
         currentAlertDialog.setView(view);
-        dialogLineWidth = currentAlertDialog.create();
-        dialogLineWidth.setTitle("Set Brush Size");
-        dialogLineWidth.show();
+        lineWidthDialog = currentAlertDialog.create();
+        lineWidthDialog.setTitle("Set Brush Size");
+        lineWidthDialog.show();
     }
 
+    // Change brush/stroke line width
     private SeekBar.OnSeekBarChangeListener widthSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
         Bitmap bitmap = Bitmap.createBitmap(400, 100, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -111,13 +179,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
+        public void onStartTrackingTouch(SeekBar seekBar) {}
 
         @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
+        public void onStopTrackingTouch(SeekBar seekBar) {}
     };
 }
