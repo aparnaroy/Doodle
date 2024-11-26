@@ -2,7 +2,7 @@
 CISC 682 - IA08: Doodle
 
 ## App Demo
-Required Features: 
+Required Features: https://youtu.be/OoudZc0LD0w
 
 ## How to Run the App
 1. Git Clone or Download the code in this repository.
