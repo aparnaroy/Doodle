@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
             if (eraseButton != null) {
                 if (isEraserActive) {
                     eraseButton.setBackgroundColor(ContextCompat.getColor(this, R.color.eraser_active));
-                    Toast.makeText(this, "Eraser Enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Eraser On", Toast.LENGTH_SHORT).show();
                 } else {
                     eraseButton.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
-                    Toast.makeText(this, "Eraser Disabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Eraser Off", Toast.LENGTH_SHORT).show();
                 }
             }
         }

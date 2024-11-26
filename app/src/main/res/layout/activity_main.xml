@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/colorPrimary"
-    android:paddingTop="45dp">
+    android:paddingTop="50dp">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
