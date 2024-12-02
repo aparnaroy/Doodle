@@ -14,7 +14,7 @@ Required Features Demo Video: https://youtu.be/OoudZc0LD0w
    a. If your emulator does not appear, in the Panel on the right side of the screen, click on Device Manager.
    b. Select the Pixel 9 Pro XL as your device.
    c. Click the play button again.
-7. That's it! The app should now be running on the emulator, ready for your doodles!
+8. That's it! The app should now be running on the emulator, ready for your doodles!
 
 ------------------- OR -------------------
 
