@@ -1,5 +1,5 @@
 # Doodle
-CISC 682 - IA08: Doodle
+CISC 682 - IA08: Doodle App
 
 ## App Demo
 Required Features: https://youtu.be/OoudZc0LD0w
