@@ -8,7 +8,7 @@ Required Features: https://youtu.be/OoudZc0LD0w
 1. Git Clone or Download the code in this repository.
 2. Open the code in Android Studio.
 3. In the Panel on the right side of the screen, click on Device Manager.
-4. Select a device of your choice, such as the Pixel 9 Pro XL.
+4. Select the Pixel 9 Pro XL as your device.
 5. Build the project by clicking the Hammer Icon at the top.
 6. Run the app by clicking on the Play Icon to the right of the Hammer Icon.
 7. That's it! The app should now be running on the emulator, ready for your doodles!
