@@ -11,7 +11,8 @@ Required Features Demo Video: https://youtu.be/OoudZc0LD0w
 4. Click the `Clone` button in the bottom right.
 5. After a few moments, a triangular play button should appear in the top bar. Click on it to build and run the app.
 6. This should open up the app in your emulator. Make sure you are using the Pixel 9 Pro XL.
-   a. If your emulator does not appear, in the Panel on the right side of the screen, click on Device Manager.
+7. If your emulator does not appear:
+   a. In the Panel on the right side of the screen, click on Device Manager.
    b. Select the Pixel 9 Pro XL as your device.
    c. Click the play button again.
 8. That's it! The app should now be running on the emulator, ready for your doodles!
