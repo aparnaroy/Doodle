@@ -3,6 +3,7 @@ CISC 682 - IA08/IA09: Doodle App
 
 ## App Demo
 Required Features Demo Video: https://youtu.be/OoudZc0LD0w
+
 Custom Feature Demo Video: https://youtu.be/dA7iPhMHlsk
 
 ## How to Run the App
